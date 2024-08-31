@@ -1,0 +1,97 @@
+/* Stylish, colorful, and animated CSS for Chatbot Interface */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e09, #d0e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.chat-container {
+    width: 400px;
+    max-width: 90%;
+    border-radius: 16px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-box {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 500px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+.message {
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.message:hover {
+    transform: scale(1.05);
+}
+
+.bot-message {
+    background: linear-gradient(135deg, #f3f3f3, #e0e0e0);
+    align-self: flex-start;
+}
+
+.user-message {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    color: white;
+    align-self: flex-end;
+}
+
+.input-container {
+    display: flex;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+}
+
+#user-input {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    background: rgba(255, 255, 255, 0.9);
+    transition: background 0.3s ease;
+}
+
+#user-input:focus {
+    background: #e8f5e9;
+}
+
+#send-button {
+    padding: 15px 25px;
+    border: none;
+    background: #4caf50;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#send-button:hover {
+    background: #45a049;
+    transform: scale(1.1);
+}
