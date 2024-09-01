@@ -1,25 +1,38 @@
-/* Stylish, colorful, and animated CSS for Chatbot Interface */
+/* Base styling for the whole page */
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #e09, #d0e);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     overflow: hidden;
+    position: relative; /* To position the background image */
+    background: linear-gradient(135deg, #333, #000); /* Black gradient background */
+    background-size: 400% 400%; /* For smooth gradient animation */
+    animation: gradientAnimation 15s ease infinite; /* Apply animation */
 }
 
+/* Grand Background Animation */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+/* Chat Container Styling */
 .chat-container {
     width: 400px;
     max-width: 90%;
     border-radius: 16px;
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    background: #fff;
+    background: #222; /* Darker background for chat container */
     overflow: hidden;
     animation: fadeIn 0.5s ease-in-out;
+    position: relative; /* Ensure it's above the background image */
+    z-index: 1; /* Place chat container above background */
 }
 
 @keyframes fadeIn {
@@ -32,9 +45,9 @@ body {
     padding: 20px;
     overflow-y: auto;
     max-height: 500px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(5px);
-    border-bottom: 1px solid #eee;
+    background: rgba(255, 255, 255, 0.1); /* Lighter background with transparency */
+    backdrop-filter: blur(10px); /* Increased blur for better contrast */
+    border-bottom: 1px solid #444; /* Darker border */
     transition: all 0.3s ease;
 }
 
@@ -50,20 +63,21 @@ body {
 }
 
 .bot-message {
-    background: linear-gradient(135deg, #f3f3f3, #e0e0e0);
+    background: linear-gradient(135deg, #444, #555); /* Darker gradient for bot messages */
+    color: #fff; /* White text color */
     align-self: flex-start;
 }
 
 .user-message {
-    background: linear-gradient(135deg, #4caf50, #66bb6a);
-    color: white;
+    background: linear-gradient(135deg, #000, #333); /* Darker gradient for user messages */
+    color: #fff; /* White text color */
     align-self: flex-end;
 }
 
 .input-container {
     display: flex;
-    border-top: 1px solid #eee;
-    background: #fafafa;
+    border-top: 1px solid #444; /* Darker border */
+    background: #333; /* Darker background for input area */
 }
 
 #user-input {
@@ -73,25 +87,35 @@ body {
     border-radius: 0;
     outline: none;
     font-size: 16px;
-    color: #333;
-    background: rgba(255, 255, 255, 0.9);
+    color: #ddd; /* Lighter text color */
+    background: #222; /* Dark background for input */
     transition: background 0.3s ease;
 }
 
 #user-input:focus {
-    background: #e8f5e9;
+    background: #333; /* Slightly lighter on focus */
 }
 
 #send-button {
     padding: 15px 25px;
     border: none;
-    background: #4caf50;
+    background: #555; /* Dark button background */
     color: white;
     cursor: pointer;
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
 #send-button:hover {
-    background: #45a049;
+    background: #666; /* Slightly lighter on hover */
     transform: scale(1.1);
+}
+
+/* Style for particles.js container */
+#particles-js {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
