@@ -1,4 +1,4 @@
-/* Base styling for the whole page */
+/* General styling */
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
@@ -7,20 +7,19 @@ body {
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    position: relative; /* To position the background image */
-    background: linear-gradient(135deg, #333, #000); /* Black gradient background */
-    background-size: 400% 400%; /* For smooth gradient animation */
-    animation: gradientAnimation 15s ease infinite; /* Apply animation */
+    background: linear-gradient(135deg, #333, #000);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
 }
 
-/* Grand Background Animation */
+/* Background animation */
 @keyframes gradientAnimation {
     0% { background-position: 0% 0%; }
     50% { background-position: 100% 100%; }
     100% { background-position: 0% 0%; }
 }
 
-/* Chat Container Styling */
+/* Chat container */
 .chat-container {
     width: 400px;
     max-width: 90%;
@@ -28,29 +27,31 @@ body {
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    background: #222; /* Darker background for chat container */
+    background: rgba(34, 34, 34, 0.95);
     overflow: hidden;
+    position: relative;
+    z-index: 1;
     animation: fadeIn 0.5s ease-in-out;
-    position: relative; /* Ensure it's above the background image */
-    z-index: 1; /* Place chat container above background */
 }
 
+/* Fade-in animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Chat box */
 .chat-box {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
     max-height: 500px;
-    background: rgba(255, 255, 255, 0.1); /* Lighter background with transparency */
-    backdrop-filter: blur(10px); /* Increased blur for better contrast */
-    border-bottom: 1px solid #444; /* Darker border */
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #444;
 }
 
+/* Message styling */
 .message {
     padding: 12px 15px;
     margin: 8px 0;
@@ -63,54 +64,48 @@ body {
 }
 
 .bot-message {
-    background: linear-gradient(135deg, #444, #555); /* Darker gradient for bot messages */
-    color: #fff; /* White text color */
-    align-self: flex-start;
+    background: linear-gradient(135deg, #444, #555);
+    color: #fff;
 }
 
 .user-message {
-    background: linear-gradient(135deg, #000, #333); /* Darker gradient for user messages */
-    color: #fff; /* White text color */
+    background: linear-gradient(135deg, #000, #333);
+    color: #fff;
     align-self: flex-end;
 }
 
+/* Input container */
 .input-container {
     display: flex;
-    border-top: 1px solid #444; /* Darker border */
-    background: #333; /* Darker background for input area */
+    border-top: 1px solid #444;
+    background: #333;
 }
 
 #user-input {
     flex: 1;
     padding: 15px;
     border: none;
-    border-radius: 0;
     outline: none;
     font-size: 16px;
-    color: #ddd; /* Lighter text color */
-    background: #222; /* Dark background for input */
-    transition: background 0.3s ease;
+    color: #ddd;
+    background: #222;
 }
 
-#user-input:focus {
-    background: #333; /* Slightly lighter on focus */
-}
-
-#send-button {
-    padding: 15px 25px;
+#send-button, #voice-button {
+    padding: 15px 20px;
     border: none;
-    background: #555; /* Dark button background */
+    background: #555;
     color: white;
     cursor: pointer;
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
-#send-button:hover {
-    background: #666; /* Slightly lighter on hover */
+#send-button:hover, #voice-button:hover {
+    background: #666;
     transform: scale(1.1);
 }
 
-/* Style for particles.js container */
+/* Particles.js container */
 #particles-js {
     position: absolute;
     top: 0;
