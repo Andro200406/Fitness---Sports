@@ -2,30 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Assistant Chatbot</title>
+    <title>Advanced Fitness Assistant</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div id="particles-js"></div>
-    <div class="chat-container">
-        <div class="chat-box" id="chat-box">
-            <div class="message bot-message">
-                Hi there! I'm your Health and Fitness Assistant. How can I help you today?
-            </div>
-        </div>
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
-            <button id="voice-button">
-                <img src="mic voice.png" alt="Voice Input">
-            </button>
-        </div>
+    <!-- Signup Page -->
+    <div class="form-container" id="signup-page">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-name" placeholder="Enter your name">
+        <input type="email" id="signup-email" placeholder="Enter your email">
+        <input type="password" id="signup-password" placeholder="Create a password">
+        <button type="button" id="signup-button">Sign Up</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- Login Page -->
+    <div class="form-container" id="login-page" style="display: none;">
+        <h2>Login</h2>
+        <input type="email" id="login-email" placeholder="Enter your email">
+        <input type="password" id="login-password" placeholder="Enter your password">
+        <button type="button" id="login-button">Login</button>
+    </div>
+
+    <!-- Chatbot Page -->
+    <div class="form-container" id="chatbot-page" style="display: none;">
+        <h2>Fitness Chatbot</h2>
+        <div id="chat-box"></div>
+        <input type="text" id="user-message" placeholder="Type a message">
+        <button type="button" id="send-message">Send</button>
+        <button type="button" id="dashboard-button">View Dashboard</button>
+        <button type="button" id="achievements-button">View Achievements</button>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div class="form-container" id="dashboard-page" style="display: none;">
+        <h2>Your Fitness Dashboard</h2>
+        <canvas id="progress-chart" width="400" height="200"></canvas>
+        <button type="button" id="back-to-chatbot">Back to Chatbot</button>
+    </div>
+
+    <!-- Achievements Section -->
+    <div id="achievements" style="display:none;">
+        <h3>Your Achievements</h3>
+        <ul id="achievement-list"></ul>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <label class="switch">
+        <input type="checkbox" id="dark-mode-toggle">
+        <span class="slider round"></span>
+    </label>
+
     <script src="script.js"></script>
 </body>
 </html>

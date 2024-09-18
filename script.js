@@ -1,116 +1,171 @@
-const chatBox = document.getElementById("chat-box");
-const userInput = document.getElementById("user-input");
-const sendButton = document.getElementById("send-button");
-const voiceButton = document.getElementById("voice-button");
-
-// Event listeners for sending messages
-sendButton.addEventListener("click", sendMessage);
-userInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") sendMessage();
-});
-voiceButton.addEventListener("click", startVoiceRecognition);
-
-// Function to send and handle user messages
-function sendMessage() {
-    const message = userInput.value.trim();
-    if (message === "") return;
-    addMessageToChat("user-message", message);
-    handleUserInput(message);
-    userInput.value = "";
+// Utility function to switch between pages
+function transitionPage(fromPage, toPage) {
+    document.getElementById(fromPage).style.display = 'none';
+    document.getElementById(toPage).style.display = 'block';
 }
 
-// Voice recognition setup
-function startVoiceRecognition() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'en-US';
-    recognition.start();
+// Signup functionality
+document.getElementById('signup-button').addEventListener('click', function() {
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
 
-    recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        addMessageToChat("user-message", transcript);
-        handleUserInput(transcript);
-    };
-
-    recognition.onerror = (event) => {
-        alert('Voice recognition error: ' + event.error);
-    };
-}
-
-// Function to handle and generate chatbot responses
-function handleUserInput(input) {
-    input = input.toLowerCase();
-    let response = "I'm here to help with your fitness journey! Ask me about exercises, diet tips, warm-ups, or mental health advice.";
-
-    if (input.includes("exercise") || input.includes("workout")) {
-        response = "Please specify your goal: weight loss, muscle gain, or general fitness.";
-    } else if (input.includes("diet") || input.includes("food") || input.includes("nutrition")) {
-        response = "Focus on balanced meals with the right macros for your goals.";
-    } else if (input.includes("warm-up") || input.includes("pre-workout")) {
-        response = "Start with dynamic stretches like arm swings and leg swings.";
-    } else if (input.includes("mental") || input.includes("mind") || input.includes("relax")) {
-        response = "Try mindfulness exercises like deep breathing and meditation.";
+    if (name && email && password) {
+        const signupData = { name, email, password };
+        localStorage.setItem('userSignup', JSON.stringify(signupData));
+        alert('Signup successful!');
+        transitionPage('signup-page', 'login-page');
+    } else {
+        alert('Please fill all the fields');
     }
+});
 
-    addMessageToChat("bot-message", response);
+// Login functionality
+document.getElementById('login-button').addEventListener('click', function() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const storedSignup = JSON.parse(localStorage.getItem('userSignup'));
+
+    if (storedSignup && storedSignup.email === email && storedSignup.password === password) {
+        alert('Login successful!');
+        transitionPage('login-page', 'chatbot-page');
+        const workoutDietSuggestion = suggestWorkoutAndDiet();
+        const botMessage = document.createElement('div');
+        botMessage.classList.add('message', 'bot-message');
+        botMessage.innerText = workoutDietSuggestion;
+        document.getElementById('chat-box').appendChild(botMessage);
+    } else {
+        alert('Invalid email or password');
+    }
+});
+
+// Personalized workout and diet suggestions
+function suggestWorkoutAndDiet() {
+    const userDetails = JSON.parse(localStorage.getItem('userSignup'));
+    let workoutSuggestion = `Based on your sign-up details, ${userDetails.name}, here are some workout suggestions:`;
+
+    workoutSuggestion += "\n- Strength training\n- HIIT\n- Cardio workouts";
+    return workoutSuggestion;
 }
 
-// Function to add messages to chat
-function addMessageToChat(className, text) {
-    const message = document.createElement("div");
-    message.className = `message ${className}`;
-    message.innerHTML = text;
-    chatBox.appendChild(message);
+// Chatbot message handling
+document.getElementById('send-message').addEventListener('click', function() {
+    const userMessage = document.getElementById('user-message').value;
+    const chatBox = document.getElementById('chat-box');
+
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.classList.add('message', 'user-message');
+    userMessageDiv.innerText = userMessage;
+    chatBox.appendChild(userMessageDiv);
+
+    const botReply = getBotReply(userMessage);
+    const botMessageDiv = document.createElement('div');
+    botMessageDiv.classList.add('message', 'bot-message');
+    botMessageDiv.innerText = botReply;
+    chatBox.appendChild(botMessageDiv);
+
+    document.getElementById('user-message').value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
+});
+
+// Bot reply function with NLP for fitness queries
+function getBotReply(userMessage) {
+    const responses = {
+        greeting: ["Hello! How can I assist you today?", "Hi there! What can I help you with?"],
+        workout: ["I can suggest some exercises. What are you looking for?", "Let me recommend some workouts based on your goals."],
+        diet: ["I can help with diet tips. What are your dietary preferences?", "Looking for some diet suggestions? Let me know your goals."],
+        challenge: ["I have some fitness challenges ready for you!", "Up for a new fitness challenge?"]
+    };
+
+    if (userMessage.toLowerCase().includes("hi") || userMessage.toLowerCase().includes("hello")) {
+        return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+    } else if (userMessage.toLowerCase().includes("workout") || userMessage.toLowerCase().includes("exercise")) {
+        return responses.workout[Math.floor(Math.random() * responses.workout.length)];
+    } else if (userMessage.toLowerCase().includes("diet")) {
+        return responses.diet[Math.floor(Math.random() * responses.diet.length)];
+    } else {
+        return "I'm here to help with your fitness journey!";
+    }
 }
 
-// Particles.js configuration
-particlesJS('particles-js', {
-    "particles": {
-        "number": {
-            "value": 80,
-            "density": {
-                "enable": true,
-                "value_area": 800
-            }
+// Dashboard with Chart.js
+document.getElementById('dashboard-button').addEventListener('click', function() {
+    transitionPage('chatbot-page', 'dashboard-page');
+    loadProgressChart();
+});
+
+function loadProgressChart() {
+    const ctx = document.getElementById('progress-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'Weight Progress (kg)',
+                data: [75, 74, 73, 72],
+                borderColor: '#28a745',
+                borderWidth: 2,
+                fill: false
+            }]
         },
-        "color": {
-            "value": "#ffffff"
-        },
-        "shape": {
-            "type": "circle",
-            "stroke": {
-                "width": 0,
-                "color": "#000000"
-            }
-        },
-        "opacity": {
-            "value": 0.5,
-            "random": false
-        },
-        "size": {
-            "value": 3,
-            "random": true
-        },
-        "line_linked": {
-            "enable": true,
-            "distance": 150,
-            "color": "#ffffff",
-            "opacity": 0.4,
-            "width": 1
-        },
-        "move": {
-            "enable": true,
-            "speed": 6,
-            "direction": "none",
-            "random": false,
-            "straight": false,
-            "out_mode": "out",
-            "attract": {
-                "enable": false,
-                "rotateX": 600,
-                "rotateY": 1200
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
             }
         }
-    },
-    "retina_detect": true
+    });
+}
+
+// Achievements Display
+document.getElementById('achievements-button').addEventListener('click', function() {
+    loadAchievements();
+});
+
+function loadAchievements() {
+    const achievementList = document.getElementById('achievement-list');
+    const achievements = [
+        { name: "First Workout", completed: true },
+        { name: "5-Day Workout Streak", completed: false },
+    ];
+
+    achievementList.innerHTML = ''; // Clear previous
+    achievements.forEach(achievement => {
+        const li = document.createElement('li');
+        li.textContent = achievement.name + (achievement.completed ? ' ✅' : ' ❌');
+        achievementList.appendChild(li);
+    });
+
+    document.getElementById('achievements').style.display = 'block';
+}
+
+// Dark Mode Toggle
+document.getElementById('dark-mode-toggle').addEventListener('change', function() {
+    document.body.classList.toggle('dark-mode');
+    document.querySelectorAll('.form-container').forEach(container => {
+        container.classList.toggle('dark-mode');
+    });
+});
+
+// Push notifications (only works in some browsers)
+function requestNotificationPermission() {
+    if (Notification.permission !== 'granted') {
+        Notification.requestPermission();
+    }
+}
+
+function sendWorkoutReminder() {
+    if (Notification.permission === 'granted') {
+        const notification = new Notification("Time to workout!", {
+            body: "Don't forget to complete your workout today!",
+            icon: "workout-icon.png"
+        });
+    }
+}
+
+// Trigger workout reminder on login
+document.getElementById('login-button').addEventListener('click', function() {
+    sendWorkoutReminder();
 });
