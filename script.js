@@ -5,7 +5,7 @@ function transitionPage(fromPage, toPage) {
 }
 
 // Signup functionality
-document.getElementById('signup-button').addEventListener('click', function() {
+document.getElementById('signup-button').addEventListener('click', function () {
     const name = document.getElementById('signup-name').value;
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
@@ -21,7 +21,7 @@ document.getElementById('signup-button').addEventListener('click', function() {
 });
 
 // Login functionality
-document.getElementById('login-button').addEventListener('click', function() {
+document.getElementById('login-button').addEventListener('click', function () {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const storedSignup = JSON.parse(localStorage.getItem('userSignup'));
@@ -29,143 +29,116 @@ document.getElementById('login-button').addEventListener('click', function() {
     if (storedSignup && storedSignup.email === email && storedSignup.password === password) {
         alert('Login successful!');
         transitionPage('login-page', 'chatbot-page');
-        const workoutDietSuggestion = suggestWorkoutAndDiet();
-        const botMessage = document.createElement('div');
-        botMessage.classList.add('message', 'bot-message');
-        botMessage.innerText = workoutDietSuggestion;
-        document.getElementById('chat-box').appendChild(botMessage);
     } else {
         alert('Invalid email or password');
     }
 });
 
-// Personalized workout and diet suggestions
-function suggestWorkoutAndDiet() {
-    const userDetails = JSON.parse(localStorage.getItem('userSignup'));
-    let workoutSuggestion = `Based on your sign-up details, ${userDetails.name}, here are some workout suggestions:`;
-
-    workoutSuggestion += "\n- Strength training\n- HIIT\n- Cardio workouts";
-    return workoutSuggestion;
-}
-
-// Chatbot message handling
-document.getElementById('send-message').addEventListener('click', function() {
-    const userMessage = document.getElementById('user-message').value;
-    const chatBox = document.getElementById('chat-box');
-
-    const userMessageDiv = document.createElement('div');
-    userMessageDiv.classList.add('message', 'user-message');
-    userMessageDiv.innerText = userMessage;
-    chatBox.appendChild(userMessageDiv);
-
-    const botReply = getBotReply(userMessage);
-    const botMessageDiv = document.createElement('div');
-    botMessageDiv.classList.add('message', 'bot-message');
-    botMessageDiv.innerText = botReply;
-    chatBox.appendChild(botMessageDiv);
-
-    document.getElementById('user-message').value = '';
-    chatBox.scrollTop = chatBox.scrollHeight;
-});
-
-// Bot reply function with NLP for fitness queries
-function getBotReply(userMessage) {
-    const responses = {
-        greeting: ["Hello! How can I assist you today?", "Hi there! What can I help you with?"],
-        workout: ["I can suggest some exercises. What are you looking for?", "Let me recommend some workouts based on your goals."],
-        diet: ["I can help with diet tips. What are your dietary preferences?", "Looking for some diet suggestions? Let me know your goals."],
-        challenge: ["I have some fitness challenges ready for you!", "Up for a new fitness challenge?"]
-    };
-
-    if (userMessage.toLowerCase().includes("hi") || userMessage.toLowerCase().includes("hello")) {
-        return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
-    } else if (userMessage.toLowerCase().includes("workout") || userMessage.toLowerCase().includes("exercise")) {
-        return responses.workout[Math.floor(Math.random() * responses.workout.length)];
-    } else if (userMessage.toLowerCase().includes("diet")) {
-        return responses.diet[Math.floor(Math.random() * responses.diet.length)];
-    } else {
-        return "I'm here to help with your fitness journey!";
-    }
-}
-
-// Dashboard with Chart.js
-document.getElementById('dashboard-button').addEventListener('click', function() {
-    transitionPage('chatbot-page', 'dashboard-page');
-    loadProgressChart();
-});
-
-function loadProgressChart() {
-    const ctx = document.getElementById('progress-chart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [{
-                label: 'Weight Progress (kg)',
-                data: [75, 74, 73, 72],
-                borderColor: '#28a745',
-                borderWidth: 2,
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: false
-                }
-            }
-        }
-    });
-}
-
-// Achievements Display
-document.getElementById('achievements-button').addEventListener('click', function() {
-    loadAchievements();
-});
-
-function loadAchievements() {
-    const achievementList = document.getElementById('achievement-list');
-    const achievements = [
-        { name: "First Workout", completed: true },
-        { name: "5-Day Workout Streak", completed: false },
-    ];
-
-    achievementList.innerHTML = ''; // Clear previous
-    achievements.forEach(achievement => {
-        const li = document.createElement('li');
-        li.textContent = achievement.name + (achievement.completed ? ' ✅' : ' ❌');
-        achievementList.appendChild(li);
-    });
-
-    document.getElementById('achievements').style.display = 'block';
-}
-
 // Dark Mode Toggle
-document.getElementById('dark-mode-toggle').addEventListener('change', function() {
+document.getElementById('dark-mode-toggle').addEventListener('change', function () {
     document.body.classList.toggle('dark-mode');
     document.querySelectorAll('.form-container').forEach(container => {
         container.classList.toggle('dark-mode');
     });
 });
 
-// Push notifications (only works in some browsers)
-function requestNotificationPermission() {
-    if (Notification.permission !== 'granted') {
-        Notification.requestPermission();
+// PoseNet Variables
+let net;
+const videoElement = document.getElementById('workout-video');
+const canvas = document.getElementById('pose-canvas');
+const ctx = canvas.getContext('2d');
+
+// Initialize PoseNet
+async function initPoseNet() {
+    net = await posenet.load();
+    console.log('PoseNet model loaded.');
+}
+
+// Load and analyze the uploaded video
+document.getElementById('workout-video-input').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    const url = URL.createObjectURL(file);
+    videoElement.src = url;
+    videoElement.load();
+    videoElement.play();
+});
+
+// Analyze Workout Form Button
+document.getElementById('analyze-button').addEventListener('click', async function () {
+    const workoutFeedback = document.getElementById('workout-feedback');
+    workoutFeedback.textContent = "Analyzing workout form...";
+
+    // Start pose detection on the video
+    const pose = await detectPose();
+
+    if (pose) {
+        drawPose(pose);
+        evaluatePose(pose);
+    }
+});
+
+// Detect Pose in the Video
+async function detectPose() {
+    const pose = await net.estimateSinglePose(videoElement, {
+        flipHorizontal: false
+    });
+    console.log(pose);
+    return pose;
+}
+
+// Draw Pose on Canvas
+function drawPose(pose) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    pose.keypoints.forEach(point => {
+        if (point.score > 0.5) {
+            const { y, x } = point.position;
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+        }
+    });
+}
+
+// Evaluate Pose and Provide Feedback
+function evaluatePose(pose) {
+    const formFeedback = document.getElementById('form-feedback');
+
+    // Example: Check if arms are raised correctly (using keypoints of shoulders and wrists)
+    const leftShoulder = pose.keypoints.find(k => k.part === 'leftShoulder');
+    const leftWrist = pose.keypoints.find(k => k.part === 'leftWrist');
+
+    if (leftShoulder && leftWrist && leftWrist.position.y < leftShoulder.position.y) {
+        formFeedback.textContent = "Great! Your arms are raised correctly.";
+        formFeedback.style.color = "green";
+    } else {
+        formFeedback.textContent = "Incorrect form! Make sure your arms are raised properly.";
+        formFeedback.style.color = "red";
     }
 }
 
-function sendWorkoutReminder() {
-    if (Notification.permission === 'granted') {
-        const notification = new Notification("Time to workout!", {
-            body: "Don't forget to complete your workout today!",
-            icon: "workout-icon.png"
-        });
+// Close Modal when clicking outside or on close button
+document.querySelector('.close-modal').addEventListener('click', function () {
+    document.getElementById('analysis-modal').style.display = 'none';
+});
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('analysis-modal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
     }
-}
+});
 
-// Trigger workout reminder on login
-document.getElementById('login-button').addEventListener('click', function() {
-    sendWorkoutReminder();
+// Initialize PoseNet model when page loads
+window.onload = initPoseNet;
+
+// Start Workout Button
+document.getElementById('start-workout-button').addEventListener('click', function () {
+    transitionPage('chatbot-page', 'workout-page');
+    loadPoseNetModel(); // Load PoseNet when starting workout
+});
+
+// Stop Workout Button
+document.getElementById('stop-workout-button').addEventListener('click', function () {
+    transitionPage('workout-page', 'chatbot-page');
 });
