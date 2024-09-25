@@ -3,97 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Fitness Assistant</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script> <!-- Load PoseNet -->
+    <title>All Workout Tracker</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <h1>Advanced Fitness Assistant</h1>
-        <label class="switch">
-            <input type="checkbox" id="dark-mode-toggle">
-            <span class="slider round"></span>
-        </label>
-    </header>
+    <h1>All Workout Tracker</h1>
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
+    <div id="form-feedback"></div>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Signup Section -->
-        <section class="form-container" id="signup-page">
-            <h2>Sign Up</h2>
-            <input type="text" id="signup-name" placeholder="Enter your name">
-            <input type="email" id="signup-email" placeholder="Enter your email">
-            <input type="password" id="signup-password" placeholder="Create a password">
-            <button type="button" id="signup-button">Sign Up</button>
-        </section>
+    <label for="exercise-select">Select Exercise:</label>
+    <select id="exercise-select">
+        <option value="squat">Squat</option>
+        <option value="pushup">Push-Up</option>
+        <option value="situp">Sit-Up</option>
+        <option value="jumpingjack">Jumping Jack</option>
+        <option value="pullup">Pull-Up</option>
+    </select>
 
-        <!-- Login Section -->
-        <section class="form-container" id="login-page" style="display: none;">
-            <h2>Login</h2>
-            <input type="email" id="login-email" placeholder="Enter your email">
-            <input type="password" id="login-password" placeholder="Enter your password">
-            <button type="button" id="login-button">Login</button>
-        </section>
+    <div>
+        <button id="start-workout">Start Workout</button>
+        <button id="stop-workout">Stop Workout</button>
+    </div>
 
-        <!-- Chatbot Section -->
-        <section class="form-container" id="chatbot-page" style="display: none;">
-            <h2>Fitness Chatbot</h2>
-            <div id="chat-box"></div>
-            <input type="text" id="user-message" placeholder="Type a message">
-            <button type="button" id="send-message">Send</button>
-            <button type="button" id="dashboard-button">View Dashboard</button>
-            <button type="button" id="achievements-button">View Achievements</button>
-            <button type="button" id="start-workout-button">Start Workout</button>
-            <button type="button" id="stop-workout-button" style="display: none;">Stop Workout</button>
-            <div id="form-feedback"></div>
-        </section>
-
-        <!-- Dashboard Section -->
-        <section class="form-container" id="dashboard-page" style="display: none;">
-            <h2>Your Fitness Dashboard</h2>
-            <canvas id="progress-chart" width="400" height="200"></canvas>
-            <button type="button" id="back-to-chatbot">Back to Chatbot</button>
-        </section>
-
-        <!-- Achievements Section -->
-        <section class="form-container" id="achievements-page" style="display: none;">
-            <h2>Your Achievements</h2>
-            <ul id="achievement-list"></ul>
-            <button type="button" id="back-to-chatbot-ach">Back to Chatbot</button>
-        </section>
-
-        <!-- Workout Section with Video Upload -->
-        <section id="workout-page" style="display: none;">
-            <h2>Upload Workout Video</h2>
-            <input type="file" id="workout-video-input" accept="video/*">
-            <video id="workout-video" width="500" height="300" controls></video>
-            <div id="workout-feedback"></div>
-            <button id="analyze-button">Analyze Workout Form</button>
-        </section>
-
-        <!-- Modal for Analyzed Results -->
-        <div id="analysis-modal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Workout Form Analysis</h3>
-                <canvas id="pose-canvas" width="500" height="300"></canvas> <!-- Canvas for Pose Estimation -->
-                <p id="form-feedback">Checking workout form...</p>
-            </div>
-        </div>
-
-        <!-- Modal Popup for Workout Videos -->
-        <div id="video-modal" class="modal" style="display:none;">
-            <span class="close-modal">&times;</span>
-            <video id="modal-video" controls>
-                <source src="" type="video/mp4">
-            </video>
-        </div>
-    </main>
-
-    <!-- Scripts -->
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+    <script src="script.js"></script> <!-- Link to your JavaScript file -->
 </body>
 </html>
